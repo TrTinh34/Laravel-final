@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            //
+            Schema::table('products', function (Blueprint $table) {
+                $table->integer('stock')->default(0)->after('price');
+                $table->boolean('is_active')->default(true)->after('image');
+                $table->string('slug')->unique()->nullable()->after('name');
+            });
         });
     }
 
@@ -22,7 +26,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            //
+            Schema::table('products', function (Blueprint $table) {
+                $table->dropColumn(['stock', 'is_active', 'slug']);
+            });
         });
     }
 };

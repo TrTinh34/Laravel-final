@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
@@ -46,6 +46,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     });
+
+    //chatbot
+    Route::view('/chat', 'pages.chat')->name('chat.index');
+    
+    // Route xử lý nhận tin nhắn và gọi AI bằng AJAX
+    Route::post('/chat/send', ChatController::class)->name('chat.send');
 });
 
 require __DIR__ . '/auth.php';

@@ -13,11 +13,11 @@ return [
     |
     */
 
-    'default' => 'gemini',
-    'default_for_images' => 'gemini',
-    'default_for_audio' => 'openai',
-    'default_for_transcription' => 'openai',
-    'default_for_embeddings' => 'openai',
+    'default' => 'openrouter',
+    'default_for_images' => 'openrouter',
+    'default_for_audio' => 'openrouter',
+    'default_for_transcription' => 'openrouter',
+    'default_for_embeddings' => 'openrouter',
     'default_for_reranking' => 'cohere',
 
     /*
@@ -96,6 +96,9 @@ return [
             'driver' => 'gemini',
             'key' => env('GEMINI_API_KEY'),
             'url' => env('GEMINI_URL', 'https://generativelanguage.googleapis.com/v1beta/'),
+            'options' => [
+                'verify' => false, // Ép thư viện AI của dự án này tắt xác thực SSL
+            ],
         ],
 
         'groq' => [

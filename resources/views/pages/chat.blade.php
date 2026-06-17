@@ -46,11 +46,11 @@
             >
 
                 <div
-                    class="max-w-4xl rounded-2xl px-5 py-4 shadow-sm whitespace-pre-wrap"
+                    class="max-w-4xl rounded-2xl px-5 py-4 shadow-sm"
                     :class="message.role === 'user'
-                        ? 'bg-brand-500 text-white'
-                        : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-white'"
-                    x-text="message.content"
+                        ? 'bg-brand-500 text-white whitespace-pre-wrap'
+                        : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-white prose dark:prose-invert prose-sm max-w-none'"
+                    x-html="message.role === 'user' ? message.content : renderMarkdown(message.content)"
                 ></div>
 
             </div>
@@ -105,6 +105,9 @@
     </div>
 </div>
 
+{{-- Marked.js để render Markdown --}}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
 <script>
 function chatApp() {
     return {
@@ -120,6 +123,13 @@ function chatApp() {
                 content: 'Xin chào, tôi là Sales Coach AI. Tôi có thể giúp gì cho bạn?'
             }
         ],
+
+        renderMarkdown(content) {
+            if (typeof marked !== 'undefined') {
+                return marked.parse(content);
+            }
+            return content;
+        },
 
         async sendMessage() {
 
@@ -199,4 +209,5 @@ function chatApp() {
     };
 }
 </script>
+
 @endsection

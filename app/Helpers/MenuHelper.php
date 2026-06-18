@@ -52,15 +52,15 @@ class MenuHelper
                 ],
             ],
             [
-                'icon' => 'brain', // hoặc 'robot', 'brain', 'cpu' tùy thuộc vào bộ icon template đang dùng
+                'icon' => 'brain',
                 'name' => 'Trợ Lý AI',
                 'subItems' => [
                     [
                         'name' => 'Sales Coach AI',
-                        'path' => route('chat.index', absolute: false),
+                        // Đổi thuộc tính 'path' thành 'action'
+                        'action' => 'open-chat-widget', 
                         'pro' => false
                     ],
-                    
                 ],
             ],
         ];

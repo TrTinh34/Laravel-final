@@ -1,10 +1,14 @@
 <?php
+
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PaymentController;
+
 // Trang chủ bên ngoài (mọi người đều xem được)
 Route::get('/', function () {
     return view('welcome');
@@ -16,9 +20,8 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
 
     // Trang Dashboard chung sau khi đăng nhập
-    Route::get('/dashboard', function () {
-        return view('dashboard', ['title' => 'Dashboard']);
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
     // ---------------------------------------------------------------------
     // PHÂN NHÓM 1: CHỈ ADMIN MỚI VÀO ĐƯỢC (Quản lý User)
@@ -47,11 +50,31 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     });
 
-    //chatbot
+    // Chatbot
     Route::view('/chat', 'pages.chat')->name('chat.index');
     
     // Route xử lý nhận tin nhắn và gọi AI bằng AJAX
     Route::post('/chat/send', ChatController::class)->name('chat.send');
+
+    // [PayOS]: Route kích hoạt tạo link thanh toán VietQR (Yêu cầu khách phải đăng nhập)
+    Route::get('/payment/checkout/{order}', [PaymentController::class, 'createPaymentLink'])->name('payment.checkout');
 });
+
+// =========================================================================
+// KHU VỰC CÔNG KHAI (Không yêu cầu đăng nhập)
+// =========================================================================
+
+// [PayOS]: Cổng nhận thông báo biến động số dư ngầm tự động (Đã loại bỏ CSRF)
+Route::any('/payos-webhook', [PaymentController::class, 'handleWebhook']);
+
+// [PayOS]: Màn hình hiển thị kết quả sau khi khách quét mã/hủy quét mã thanh toán xong
+Route::get('/payment/success', function() {
+    return view('pages.payment-success');
+})->name('payment.success');
+
+Route::get('/payment/cancel', function() {
+    return view('pages.payment-cancel');
+})->name('payment.cancel');
+
 
 require __DIR__ . '/auth.php';

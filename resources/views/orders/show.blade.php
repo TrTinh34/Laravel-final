@@ -16,9 +16,9 @@
 
     {{-- Flash --}}
     @if(session('success'))
-        <div class="mb-4 rounded-lg bg-green-100 px-4 py-3 text-green-800">
-            {{ session('success') }}
-        </div>
+    <div class="mb-4 rounded-lg bg-green-100 px-4 py-3 text-green-800">
+        {{ session('success') }}
+    </div>
     @endif
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -118,14 +118,14 @@
                 </div>
                 <div class="p-6">
                     @php
-                        $colorMap = [
-                            'pending'    => 'bg-yellow-100 text-yellow-800',
-                            'processing' => 'bg-blue-100 text-blue-800',
-                            'shipping'   => 'bg-indigo-100 text-indigo-800',
-                            'completed'  => 'bg-green-100 text-green-800',
-                            'cancelled'  => 'bg-red-100 text-red-800',
-                        ];
-                        $colorClass = $colorMap[$order->status] ?? 'bg-gray-100 text-gray-800';
+                    $colorMap = [
+                    'pending' => 'bg-yellow-100 text-yellow-800',
+                    'processing' => 'bg-blue-100 text-blue-800',
+                    'shipping' => 'bg-indigo-100 text-indigo-800',
+                    'completed' => 'bg-green-100 text-green-800',
+                    'cancelled' => 'bg-red-100 text-red-800',
+                    ];
+                    $colorClass = $colorMap[$order->status] ?? 'bg-gray-100 text-gray-800';
                     @endphp
                     <span class="inline-block rounded-full px-4 py-2 text-sm font-semibold {{ $colorClass }}">
                         {{ $order->status_label }}
@@ -139,6 +139,12 @@
                         </p>
                     </div>
                 </div>
+            </div>
+            <div class="mt-4">
+                <h4>Chọn phương thức thanh toán:</h4>
+                <a href="{{ route('payment.checkout', $order->id) }}" class="btn btn-primary bg-blue-600 text-white p-3 rounded">
+                    Thanh toán quét mã VietQR qua PayOS
+                </a>
             </div>
 
             {{-- Form cập nhật trạng thái --}}
@@ -154,9 +160,9 @@
                             class="mb-4 w-full rounded-lg border border-stroke bg-transparent px-4 py-2 text-sm
                                    outline-none focus:border-primary dark:border-strokedark dark:text-white dark:bg-boxdark">
                             @foreach($statuses as $key => $label)
-                                <option value="{{ $key }}" {{ $order->status == $key ? 'selected' : '' }}>
-                                    {{ $label }}
-                                </option>
+                            <option value="{{ $key }}" {{ $order->status == $key ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
                             @endforeach
                         </select>
                         <button type="submit"

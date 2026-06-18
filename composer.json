@@ -78,6 +78,11 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "repositories": [{
+        "name": "payos",
+        "type": "vcs",
+        "url": "https://github.com/payosvn/payos-php"
+    }]
 }

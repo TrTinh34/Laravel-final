@@ -152,6 +152,8 @@
 
     </div>
     @stack('scripts')
+    {{-- Nhúng cửa sổ Chat AI hiển thị mọi trang --}}
+    @include('components.chat-widget')
 </body>
 
 

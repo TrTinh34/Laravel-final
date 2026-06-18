@@ -69,7 +69,7 @@
             <div class="mb-4 grid grid-cols-2 gap-4">
                 <div>
                     <label class="mb-2 block text-sm font-medium text-black dark:text-white">
-                        Giá (đ) <span class="text-red-500">*</span>
+                        Giá (vnđ) <span class="text-red-500">*</span>
                     </label>
                     <input type="number" name="price" value="{{ old('price', $product->price) }}"
                         min="0" required

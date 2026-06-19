@@ -67,7 +67,7 @@ class OrderController extends Controller
         $order->update(['status' => $request->status]);
 
         // 2. Kiểm tra nếu trạng thái thuộc nhóm cần gửi Email
-        $targetStatuses = ['shipping', 'completed', 'cancelled'];
+        $targetStatuses = ['shipping', 'completed', 'cancelled']; 
         if (in_array($order->status, $targetStatuses)) {
 
             // Gửi Notification thẳng tới email của khách hàng lưu trong đơn

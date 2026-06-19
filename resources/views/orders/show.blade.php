@@ -140,12 +140,19 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-4">
-                <h4>Chọn phương thức thanh toán:</h4>
-                <a href="{{ route('payment.checkout', $order->id) }}" class="btn btn-primary bg-blue-600 text-white p-3 rounded">
-                    Thanh toán quét mã VietQR qua PayOS
-                </a>
+            @if($order->status === 'pending')
+            <div class="rounded-xl border border-stroke bg-white shadow-sm dark:border-strokedark dark:bg-boxdark">
+                <div class="border-b border-stroke px-6 py-4 dark:border-strokedark">
+                    <h3 class="text-lg font-semibold text-black dark:text-white">Thanh toán đơn hàng</h3>
+                </div>
+                <div class="p-6 space-y-3">
+                    <a href="{{ route('payment.checkout', $order->id) }}"
+                        class="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:opacity-90">
+                        Thanh toán VNPay
+                    </a>
+                </div>
             </div>
+            @endif
 
             {{-- Form cập nhật trạng thái --}}
             <div class="rounded-xl border border-stroke bg-white shadow-sm dark:border-strokedark dark:bg-boxdark">

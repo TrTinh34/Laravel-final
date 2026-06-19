@@ -32,7 +32,7 @@ class OrderSeeder extends Seeder
                 'customer_email'   => 'customer' . $i . '@example.com',
                 'customer_phone'   => '09' . rand(10000000, 99999999),
                 'customer_address' => rand(1, 100) . ' Đường Lê Lợi, Q.' . rand(1, 12) . ', TP.HCM',
-                'status'           => 'pending',
+                'status'           => $statuses[array_rand($statuses)],
                 'total_amount'     => 0,
                 'created_at'       => now()->subDays(rand(0, 60)),
             ]);

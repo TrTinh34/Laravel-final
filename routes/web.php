@@ -65,16 +65,21 @@ Route::middleware(['auth'])->group(function () {
 // =========================================================================
 
 // [PayOS]: Cổng nhận thông báo biến động số dư ngầm tự động (Đã loại bỏ CSRF)
-Route::any('/payos-webhook', [PaymentController::class, 'handleWebhook']);
+// Route khởi tạo thanh toán (nhập vào orderId của bạn)
+Route::get('/payment/create/{orderId}', [PaymentController::class, 'createPaymentLink'])->name('payment.create');
 
-// [PayOS]: Màn hình hiển thị kết quả sau khi khách quét mã/hủy quét mã thanh toán xong
-Route::get('/payment/success', function() {
-    return view('pages.payment-success');
+// Route đồng bộ hiển thị kết quả cho khách (Khớp với giá trị VNPAY_RETURN_URL trong .env)
+Route::get('/vnpay-return', [PaymentController::class, 'vnpayReturn']);
+
+// Route IPN (Nhận webhook bảo mật từ server VNPAY - Cần dùng link Expose để test)
+Route::get('/vnpay-ipn', [PaymentController::class, 'handleWebhook']);
+
+Route::get('/payment-success', function () {
+    return "Thanh toán thành công! Cảm ơn bạn.";
 })->name('payment.success');
 
-Route::get('/payment/cancel', function() {
-    return view('pages.payment-cancel');
+Route::get('/payment-cancel', function () {
+    return "Bạn đã hủy thanh toán hoặc giao dịch thất bại.";
 })->name('payment.cancel');
-
 
 require __DIR__ . '/auth.php';

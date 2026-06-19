@@ -11,12 +11,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Đăng ký alias cho RoleMiddleware tại đây
+        // 1. Giữ nguyên Đăng ký alias cho RoleMiddleware của bạn
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
+
+        // 2. Cấu hình loại trừ kiểm tra CSRF Token cho VNPAY IPN (Webhook)
         $middleware->validateCsrfTokens(except: [
-            'payos-webhook' // Cho phép đường dẫn này không cần token CSRF
+            'vnpay-ipn', // Thay thế 'payos-webhook' bằng route IPN mới của VNPAY
         ]);
     })
     

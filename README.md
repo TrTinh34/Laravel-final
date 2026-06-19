@@ -32,3 +32,12 @@ From there, you can modify the kit to your needs and add more pages.
 
 For more components, TailAdmin theme also has a [Pro version](https://checkout.tailadmin.com/buy/ed68b4bb-f0c6-4d20-a241-d3a5a81b0f25?aff=EEK4LN) (*affiliate link to support my work*) with 500+ components and dashboard variants.
 "# Laravel-final" 
+
+
+
+run rồi chạy
+lệnh expose:  expose share http://localhost:8000
+
+
+url expose hết hạn thì thay đổi lại:
+VNPAY_RETURN_URL= (url expose vừa sinh ra) trong .env

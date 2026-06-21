@@ -72,12 +72,6 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/vnpay/return', [PaymentController::class, 'vnpayReturn']);
 Route::get('/vnpay/ipn', [PaymentController::class, 'handleWebhook']);
 
-Route::get('/payment-success', function () {
-    return "Thanh toán thành công! Cảm ơn bạn.";
-})->name('payment.success');
 
-Route::get('/payment-cancel', function () {
-    return "Bạn đã hủy thanh toán hoặc giao dịch thất bại.";
-})->name('payment.cancel');
 
 require __DIR__ . '/auth.php';

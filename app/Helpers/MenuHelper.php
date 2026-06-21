@@ -58,7 +58,7 @@ class MenuHelper
                     [
                         'name' => 'Sales Coach AI',
                         // Đổi thuộc tính 'path' thành 'action'
-                        'action' => 'open-chat-widget', 
+                        'action' => 'open-chat-widget',
                         'pro' => false
                     ],
                 ],

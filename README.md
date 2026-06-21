@@ -47,11 +47,11 @@ VNPAY_RETURN_URL= (url expose vừa sinh ra) trong .env
 
 Fix — chạy lại đủ 3 lệnh này:
 Terminal 1 — Laravel server:
-bashphp artisan serve
+php artisan serve
 Terminal 2 — Queue worker (để gửi mail):
-bashphp artisan queue:work
+php artisan queue:work
 Terminal 3 — Expose tunnel:
-bashexpose share http://127.0.0.1:8000
+expose share http://127.0.0.1:8000
 
 Sau khi chạy expose share, nhớ cập nhật URL mới vào .env rồi chạy:
 bashphp artisan config:clear
@@ -67,7 +67,7 @@ Bước 1 — Khách nhấn "Thanh toán"
 
 Bước 2 — Khách thanh toán trên trang VNPay
     Khách nhập thông tin thẻ, xác nhận OTP
-    VNPay xử lý giao dịch
+    VNPay xử lý giao dịch   
 
 Bước 3 — VNPay redirect khách về web của bạn
     Dù thành công hay thất bại đều về 1 URL duy nhất: /vnpay/return
@@ -86,30 +86,30 @@ Bước 5 — VNPay gọi ngầm IPN về /vnpay/ipn
 
 
 
--Chức năng gửi mail:
+-Chức năng gửi mail: laravel notification(hệ thống thông báo)
 
-Bước 1 — Có sự kiện xảy ra
-    Khách thanh toán thành công → status đơn chuyển thành processing
-    Admin cập nhật đơn → status chuyển thành shipping, completed, cancelled
+Khi admin cập nhật trạng thái đơn hàng trong OrderController, code kiểm tra xem status mới có thuộc nhóm cần gửi mail không (shipping, completed, cancelled). Nếu có thì gọi OrderStatusChanged và truyền vào đối tượng đơn hàng.
+OrderStatusChanged nhận đơn hàng, đọc status của nó, rồi tùy theo status mà xây dựng nội dung email khác nhau — đang giao hàng thì một nội dung, hoàn thành thì nội dung khác, bị hủy thì nội dung khác nữa.
+Sau đó Laravel tự kết nối đến Gmail SMTP bằng thông tin trong .env và gửi email đến địa chỉ của khách hàng.
 
-Bước 2 — Laravel gọi Notification
-    phpNotification::route('mail', $order->customer_email)
-        ->notify(new OrderStatusChanged($order));
-    Tạo một "thông báo" kèm thông tin đơn hàng
-    Chỉ định gửi qua kênh mail
+-Queue
 
-Bước 3 — Notification đẩy vào Queue
-    Vì có ShouldQueue nên không gửi ngay
-    Đẩy vào hàng chờ (database queue) rồi trả về response ngay cho người dùng
-    Queue worker (php artisan queue:work) chạy ngầm, lấy job ra xử lý
+Cụ thể, Queue chia quy trình gửi Mail của bạn thành 2 giai đoạn tách biệt:
 
-Bước 4 — Laravel kết nối Gmail SMTP
-    Dùng thông tin trong .env (host, port, username, password)
-    Gửi email đến địa chỉ của khách
+Giai đoạn 1: Đẩy nhiệm vụ vào Hàng đợi (Diễn ra tức thì)
+Admin bấm nút cập nhật trạng thái đơn hàng.
 
-Bước 5 — Khách nhận được mail
-    Nội dung mail tùy theo status đơn hàng
-    processing → thanh toán thành công
-    shipping → đang giao hàng
-    completed → giao thành công
-    cancelled → đơn bị hủy
+OrderController kiểm tra trạng thái và kích hoạt OrderStatusChanged.
+
+[VỊ TRÍ CỦA QUEUE]: Thay vì gửi email ngay lập tức, Laravel sẽ đóng gói toàn bộ thông tin đơn hàng cùng nội dung email đã được chuẩn bị thành một "Nhiệm vụ" (Job).
+
+Laravel ném nhanh nhiệm vụ này vào Database hoặc Redis (nơi lưu trữ hàng đợi của bạn).
+
+OrderController lập tức trả về thông báo cho Admin: "Cập nhật trạng thái thành công!". Toàn bộ quá trình này chỉ mất khoảng 0.01 giây. Admin không hề biết ngầm bên dưới email thực chất chưa được gửi đi.
+
+Giai đoạn 2: Xử lý ngầm (Diễn ra bất đồng bộ ở nền)
+Ở dưới nền máy tính/server, có một lệnh Worker (lệnh php artisan queue:work) đang chạy ngầm liên tục để "rình" hàng đợi.
+
+Khi Worker thấy nhiệm vụ gửi mail do OrderStatusChanged ném vào, nó sẽ nhặt nhiệm vụ đó lên.
+
+[VỊ TRÍ KẾT NỐI SMTP]: Worker lúc này mới chính là đứa thực hiện việc kết nối đến Gmail SMTP bằng thông tin trong .env và gửi email đến cho khách hàng.

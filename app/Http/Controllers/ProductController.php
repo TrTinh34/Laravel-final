@@ -41,14 +41,13 @@ class ProductController extends Controller
             'price'       => 'required|numeric|min:0',
             'stock'       => 'required|integer|min:0',
             'image'       => 'nullable|image|max:2048',
-            'is_active'   => 'boolean',
+            'is_active'   => 'nullable|boolean',
         ]);
-
+        $data['is_active'] = $request->has('is_active');
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('products', 'public');
         }
-        $data['is_active'] = $request->boolean('is_active', true);
-
+        
         Product::create($data);
         return redirect()->route('products.index')->with('success', 'Thêm sản phẩm thành công!');
     }
@@ -68,14 +67,15 @@ class ProductController extends Controller
             'price'       => 'required|numeric|min:0',
             'stock'       => 'required|integer|min:0',
             'image'       => 'nullable|image|max:2048',
-            'is_active'   => 'boolean',
+            'is_active'   => 'nullable|boolean',
         ]);
 
+        $data['is_active'] = $request->has('is_active');
         if ($request->hasFile('image')) {
             if ($product->image) Storage::disk('public')->delete($product->image);
             $data['image'] = $request->file('image')->store('products', 'public');
         }
-        $data['is_active'] = $request->boolean('is_active', true);
+        
 
         $product->update($data);
         return redirect()->route('products.index')->with('success', 'Cập nhật sản phẩm thành công!');

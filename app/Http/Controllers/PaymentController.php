@@ -113,7 +113,7 @@ class PaymentController extends Controller
                 $order = Order::find($orderId);
 
                 if ($order && $order->status === 'pending') {
-                    $order->update(['status' => 'processing']);
+                    $order->update(['status' => 'completed']);
 
                     Notification::route('mail', $order->customer_email)
                         ->notify(new OrderStatusChanged($order));
